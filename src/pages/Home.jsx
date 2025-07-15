@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Phone, Star, Shield, Clock, Award, ArrowRight, CheckCircle, Truck } from 'lucide-react'
+import { Phone, Star, Shield, Clock, Award, ArrowRight, CheckCircle, Truck, Palette } from 'lucide-react'
 
 const Home = () => {
   const services = [
@@ -12,16 +12,16 @@ const Home = () => {
       link: '/services#collision-repair'
     },
     {
+      title: 'Full Car Paint Jobs',
+      description: 'Single-stage and premium paint jobs starting at $1,500',
+      icon: '🎨',
+      link: '/full-car-paint-philadelphia'
+    },
+    {
       title: 'Bumper Repair',
       description: 'Professional bumper repair and paint matching in Philadelphia',
       icon: '🔧',
       link: '/services#bumper-repair'
-    },
-    {
-      title: 'Rust Repair',
-      description: 'Complete rust removal and refinishing services',
-      icon: '⚡',
-      link: '/services#rust-repair'
     },
     {
       title: 'Fleet Services',
@@ -123,7 +123,7 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
             >
-              Professional collision repair, bumper repair, and auto body services. 
+              Professional collision repair, bumper repair, and <strong className="text-primary-400">full car paint jobs starting at $1,500</strong>. 
               <strong className="text-primary-400"> Free estimates</strong> and insurance claims assistance.
               <br />
               <span className="text-primary-300">Now serving Amazon DSPs and commercial fleets!</span>
@@ -229,8 +229,39 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Fleet Services Highlight */}
+      {/* Paint Jobs Highlight */}
       <section className="padding-luxury bg-gradient-to-r from-primary-900/20 to-primary-800/10">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <Palette className="text-primary-400" size={32} />
+              <h2 className="text-4xl md:text-5xl font-display font-bold">
+                <span className="gradient-text">Full Car Paint Jobs</span>
+              </h2>
+            </div>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+              Budget-friendly single-stage paint jobs starting at $1,500 or premium two-stage resprays for showroom quality
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/full-car-paint-philadelphia" className="btn-primary text-lg px-8 py-4">
+                Paint Services
+              </Link>
+              <a href="tel:267-297-7034" className="btn-secondary text-lg px-8 py-4">
+                Paint Estimate
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Fleet Services Highlight */}
+      <section className="padding-luxury">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -261,7 +292,7 @@ const Home = () => {
       </section>
 
       {/* Before & After Preview */}
-      <section className="padding-luxury">
+      <section className="padding-luxury bg-dark-900">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -294,7 +325,7 @@ const Home = () => {
               {
                 before: 'https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg',
                 after: 'https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg',
-                title: 'Bumper Repair - Roxborough'
+                title: 'Single-Stage Paint - Roxborough'
               },
               {
                 before: 'https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg',
@@ -349,7 +380,7 @@ const Home = () => {
       </section>
 
       {/* Reviews Section */}
-      <section className="padding-luxury bg-dark-900">
+      <section className="padding-luxury">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -396,7 +427,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="padding-luxury">
+      <section className="padding-luxury bg-dark-900">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -411,7 +442,7 @@ const Home = () => {
             <p className="text-xl text-primary-100 mb-12 max-w-4xl mx-auto leading-relaxed">
               Get a free estimate today! We serve Manayunk, Roxborough, and all of Philadelphia with professional auto body repair services.
               <br />
-              <strong>Now offering specialized fleet services for commercial operations.</strong>
+              <strong>Paint jobs starting at $1,500 • Fleet services available • Insurance claims assistance</strong>
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a href="tel:267-297-7034" className="bg-white text-primary-600 px-10 py-5 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105">

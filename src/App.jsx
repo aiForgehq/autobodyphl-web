@@ -11,6 +11,7 @@ import Contact from './pages/Contact'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import FleetServices from './pages/FleetServices'
+import PaintJobs from './pages/PaintJobs'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/fleet-repair-philadelphia" element={<FleetServices />} />
+            <Route path="/full-car-paint-philadelphia" element={<PaintJobs />} />
           </Routes>
         </main>
         <Footer />
