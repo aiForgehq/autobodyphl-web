@@ -75,7 +75,7 @@ const Footer = () => {
               </a>
               <div className="flex items-start space-x-3 text-gray-400">
                 <MapPin size={18} className="mt-1" />
-                <span>Serving Manayunk, Roxborough & Philadelphia, PA</span>
+                <span>5091 Umbria St. Philadelphia PA 19128</span>
               </div>
               <div className="flex items-start space-x-3 text-gray-400">
                 <Clock size={18} className="mt-1" />
