@@ -1,17 +1,14 @@
 {
   "meta": {
     "brand": "Collision Club",
-    "version": "2025-08-11-v1",
+    "version": "2025-08-11-v1.3-merged",
     "currency": "USD",
     "policy_notes": [
       "Panel-first quoting. Never full car unless explicitly requested.",
       "Itemize everything. Show low–high when ranges exist.",
       "All warranties prorated."
     ],
-    "contact": {
-      "phone": "267-212-1034",
-      "city": "Philadelphia, PA"
-    }
+    "contact": { "phone": "267-212-1034", "city": "Philadelphia, PA" }
   },
 
   "rounding": { "nearest": 5, "mode": "nearest" },
@@ -26,6 +23,12 @@
     "labor_per_hour": 65,
     "materials_paint_per_hour": 44,
     "materials_body_per_hour": 14
+  },
+
+  "labor_rates": {
+    "frame_per_hour": 95,
+    "mechanical_per_hour": 125,
+    "aluminum_per_hour": 125
   },
 
   "panel_aliases": {
@@ -45,14 +48,14 @@
 
   "panel_paint_base": {
     "bumper_front": { "min": 400, "max": 600 },
-    "bumper_rear":  { "min": 400, "max": 600 },
-    "fender_left":  { "min": 400, "max": 600 },
+    "bumper_rear": { "min": 400, "max": 600 },
+    "fender_left": { "min": 400, "max": 600 },
     "fender_right": { "min": 400, "max": 600 },
-    "door_left_front":  { "min": 400, "max": 700 },
+    "door_left_front": { "min": 400, "max": 700 },
     "door_right_front": { "min": 400, "max": 700 },
-    "door_left_rear":   { "min": 400, "max": 700 },
-    "door_right_rear":  { "min": 400, "max": 700 },
-    "quarter_left":  { "min": 400, "max": 1000 },
+    "door_left_rear": { "min": 400, "max": 700 },
+    "door_right_rear": { "min": 400, "max": 700 },
+    "quarter_left": { "min": 400, "max": 1000 },
     "quarter_right": { "min": 400, "max": 1000 },
     "hood": { "min": 400, "max": 700 },
     "roof_damage": { "min": 400, "max": 700 },
@@ -69,16 +72,25 @@
       "notes": "Use when faded/peeling/heavy sanding needed."
     },
     "sealer_rule": {
-      "panel_jobs": { "apply": "conditional", "reason": "checkerboard/multiple substrates/color change", "vehicle_level_price_min": 299, "vehicle_level_price_max": 500 },
+      "panel_jobs": {
+        "apply": "conditional",
+        "reason": "checkerboard/multiple substrates/color change",
+        "vehicle_level_price_min": 299,
+        "vehicle_level_price_max": 500
+      },
       "overall_jobs": { "apply": "always", "price": 299, "range_max_if_bigger": 500 }
     },
-    "oversize_vehicle": { "flat_min": 300, "flat_max": 1000, "triggers": ["height/roof access", "van/sprinter", "masking complexity", "paint volume"] }
+    "oversize_vehicle": {
+      "flat_min": 300,
+      "flat_max": 1000,
+      "triggers": ["height/roof access", "van/sprinter", "masking complexity", "paint volume"]
+    }
   },
 
   "bodywork_menu": {
-    "small_dent":  { "min": 75,  "max": 150 },
+    "small_dent": { "min": 75, "max": 150 },
     "medium_dent": { "min": 200, "max": 300 },
-    "large_dent":  { "min": 400, "max": 600 },
+    "large_dent": { "min": 400, "max": 600 },
     "rust_repair": { "pricing": "case_by_case", "notes": "Grinding/fill vs cut/weld — can be expensive." }
   },
 
@@ -87,18 +99,14 @@
       "code": "ENAMEL",
       "base_price": 599,
       "warranty_years": "1-2",
-      "addons": {
-        "uv_enamel_upgrade": { "price": 100, "blurb": "UV protection enamel upgrade" }
-      },
+      "addons": { "uv_enamel_upgrade": { "price": 100, "blurb": "UV protection enamel upgrade" } },
       "global_addons": { "sand_vehicle": 299, "sealer_vehicle": 299, "sealer_vehicle_max": 500 }
     },
     "single_stage_urethane": {
       "code": "URETHANE",
       "base_price": 799,
       "warranty_years": "3-4",
-      "addons": {
-        "integrated_clear": { "price": 100, "blurb": "Integrated clear add-on" }
-      },
+      "addons": { "integrated_clear": { "price": 100, "blurb": "Integrated clear add-on" } },
       "global_addons": { "sand_vehicle": 299, "sealer_vehicle": 299, "sealer_vehicle_max": 500 }
     },
     "basecoat_clear": {
@@ -127,11 +135,17 @@
   },
 
   "policies": {
-    "match_and_beat": { "enabled": true, "beat_percent": 5, "conditions": ["Comparable scope/materials", "Written estimate required", "Excludes touch-up only"] },
+    "match_and_beat": {
+      "enabled": true,
+      "beat_percent": 5,
+      "conditions": ["Comparable scope/materials", "Written estimate required", "Excludes touch-up only"]
+    },
     "fleet_policy": { "auto_discount": "none", "instruction": "Do not auto-quote discounts. Ask fleet to call for scope/volume/terms." },
     "insurance_policy": {
       "auto_quote": false,
-      "ask_fields": ["carrier","claim_number","adjuster_name","adjuster_phone","deductible_amount","is_drivable","photos_uploaded","police_report_if_applicable"],
+      "ask_fields": [
+        "carrier","claim_number","adjuster_name","adjuster_phone","deductible_amount","is_drivable","photos_uploaded","police_report_if_applicable"
+      ],
       "flows": {
         "no_claim_open": {
           "steps": [
@@ -155,215 +169,11 @@
     }
   },
 
-  "calc_rules": [
-    "For panel jobs: start with panel_paint_base per panel.",
-    "Add modifiers: pearl per panel; blend where requested; extra_prep hours -> labor + paint materials.",
-    "If sealer needed on panel jobs, add vehicle-level sealer per sealer_rule.",
-    "Oversize adds flat range if triggers present.",
-    "Rush adds 10% to subtotal (before tax/fees).",
-    "Sales tax on subtotal after rush.",
-    "Card fee only if payment method is card, applied on (subtotal + tax).",
-    "Round totals to nearest $5 if rounding_apply is true.",
-    "Apply min_invoice_total if calculated total is less than the minimum."
-  ],
-
-  "sales_language": {
-    "sanding": "We sand so the new paint sticks to the old. Better adhesion, smoother finish.",
-    "sealer": "Sealer evens the surface so it doesn’t look like a checkerboard. Cleaner color, better coverage.",
-    "upgrade_to_bcc": "Basecoat-clear gives deeper gloss and longer life. If you care about look and resale, this is it.",
-    "warranty_pitch": "We stand behind the work. All warranties are prorated and documented — no games.",
-    "fleet_positioning": "We price fair and fast. Volume gets priority scheduling and consistent rates."
-  },
-
-  "guardrails": [
-    "Never quote full-vehicle unless user asks for full paint OR multiple panels exceed 70% of the car.",
-    "If user mentions a single area, quote only that panel plus required blends.",
-    "Always request 3–5 photos and VIN if unclear.",
-    "Do not stack matte with pearl unless user confirms (rare combo)."
-  ],
-
- {
-  "meta": { "version": "2025-08-11-v1.3" },
-
-  "intake_flow": {
-    "style": "guided_qna",
-    "goal": "Book teardown or shop visit first; only give firm numbers on simple visible panel jobs.",
-    "states": [
-      {
-        "id": "greet",
-        "prompt": "Hey, I’m Collision Club. What’s going on with the car?",
-        "capture": ["free_text_issue"],
-        "next": "vehicle_info"
-      },
-      {
-        "id": "vehicle_info",
-        "prompt": "Got it. What’s the year, make, model? If you have the VIN, drop it too.",
-        "capture": ["year","make","model","vin?"],
-        "validate": { "year": ">=1995" },
-        "next": "scope_panels"
-      },
-      {
-        "id": "scope_panels",
-        "prompt": "Which area is affected? Example: rear bumper, right fender, left front door.",
-        "capture": ["panels[]"],
-        "assist": "Map user words to panel_aliases.",
-        "next": "safety_check"
-      },
-      {
-        "id": "safety_check",
-        "prompt": "Is it drivable and safe? Any airbags, warning lights, or doors not closing?",
-        "capture": ["is_drivable","airbag_light?","doors_latch?"],
-        "branch": [
-          { "if": "airbag_light==true", "to": "srs_path" },
-          { "else": "insurance_check" }
-        ]
-      },
-      {
-        "id": "insurance_check",
-        "prompt": "Is this through insurance or self-pay?",
-        "capture": ["insurance_type"], 
-        "options": ["insurance","self_pay","not_sure"],
-        "branch": [
-          { "if": "insurance_type==insurance", "to": "insurance_intake" },
-          { "else": "hidden_damage_check" }
-        ]
-      },
-      {
-        "id": "hidden_damage_check",
-        "prompt": "Any gaps, parts loose, lamps with moisture, or hood/doors not lining up?",
-        "capture": ["misalignment?","loose_parts?","lamp_moisture?","cooling_visible?","sensor_area_hit?"],
-        "derive": { "hidden_triggers": "any(misalignment,loose_parts,lamp_moisture,cooling_visible,sensor_area_hit)" },
-        "branch": [
-          { "if": "hidden_triggers==true", "to": "booking_push" },
-          { "else": "finish_type" }
-        ]
-      },
-      {
-        "id": "finish_type",
-        "prompt": "Paint finish: is it a pearl/matte or regular color?",
-        "capture": ["is_pearl?","is_matte?"],
-        "next": "photo_request"
-      },
-      {
-        "id": "photo_request",
-        "prompt": "Shoot over 3–5 photos of the damage (close + 6–8 ft away) and the VIN plate. Text to 267-212-1034.",
-        "capture": ["photos_uploaded?"],
-        "next": "path_decision"
-      },
-      {
-        "id": "path_decision",
-        "derive": {
-          "is_simple_panel": "count(panels)==1 && hidden_triggers==false && insurance_type!='insurance' && airbag_light!=true"
-        },
-        "branch": [
-          { "if": "is_simple_panel==true", "to": "simple_quote_preview" },
-          { "else": "booking_push" }
-        ]
-      },
-      {
-        "id": "simple_quote_preview",
-        "prompt": "Based on what you sent, here’s a **preliminary** range for that panel with pro finish. We’ll confirm exact price in-shop.",
-        "action": "build_range_using_panel_paint_base + modifiers + tax/fees + min_invoice_total; DO NOT offer full-vehicle.",
-        "followup": "close_to_booking",
-        "next": "close_to_booking"
-      },
-      {
-        "id": "booking_push",
-        "prompt": "{{booking_script}}",
-        "action": "Offer earliest teardown slot; collect day/time preference.",
-        "capture": ["preferred_day","preferred_time","contact_method"],
-        "next": "book_appointment"
-      },
-      {
-        "id": "book_appointment",
-        "prompt": "Locked. I’ll text you the appointment details and what to bring. Anything else you want us to check while it’s in?",
-        "capture": ["extra_requests?"],
-        "action": "Send SMS confirm; attach shop address and drop-off instructions.",
-        "end": true
-      },
-
-      /* Insurance path */
-      {
-        "id": "insurance_intake",
-        "prompt": "No problem. Do you already have a claim open? If yes, what’s the carrier and claim number?",
-        "capture": ["claim_open","carrier?","claim_number?","adjuster_name?","adjuster_phone?","deductible_amount?"],
-        "branch": [
-          { "if": "claim_open==true", "to": "insurance_claim_open_flow" },
-          { "else": "insurance_no_claim_flow" }
-        ]
-      },
-      {
-        "id": "insurance_no_claim_flow",
-        "prompt": "{{insurance_no_claim_script}}",
-        "action": "Guide to file claim; collect photos + VIN; push booking for inspection/CCC estimate.",
-        "next": "booking_push"
-      },
-      {
-        "id": "insurance_claim_open_flow",
-        "prompt": "{{insurance_claim_open_script}}",
-        "action": "Collect adjuster info; request their estimate if available; push booking for supplements.",
-        "next": "booking_push"
-      },
-
-      /* SRS / Airbag path */
-      {
-        "id": "srs_path",
-        "prompt": "Since an airbag or SRS light is involved, we’ll need an in-shop inspection and scans before pricing.",
-        "action": "Booking-first; no pricing. Explain scan-before/after and OEM-only parts.",
-        "next": "booking_push"
-      }
-    ],
-
-    "scripts": {
-      "booking_script": "Best next step is to get you on the schedule for a quick teardown/inspection so we can give you an exact number. We’ll photo everything and send a line-item before any extra work. What works — today, tomorrow, or later this week?",
-      "close_to_booking": "Want to lock a time? We can get you in fast. We’ll walk you through the finish and warranty options in person.",
-      "insurance_no_claim_script": "We’ll inspect and write a CCC estimate first, then you file the claim — we’ll guide you. We send the estimate + photos to your adjuster and handle supplements. Let’s book you in so we can get that started.",
-      "insurance_claim_open_script": "Perfect. Share the carrier, claim #, and adjuster contact. We’ll review their estimate, write supplements for anything missed, and handle the back-and-forth. Let’s get you booked so we can start.",
-      "oem_vs_aftermarket_explain": "OEM fits like factory and meets safety specs; higher cost. Aftermarket/LKQ can save money but may need extra prep and doesn’t carry OEM warranty. For safety parts we only use OEM."
-    },
-
-    "outputs": {
-      "booking_first_conditions": [
-        "hidden_triggers==true",
-        "insurance_type=='insurance'",
-        "airbag_light==true",
-        "count(panels)>1",
-        "sensor_area_hit==true",
-        "structural_or_frame_suspected==true",
-        "replacement_suspected==true"
-      ],
-      "quote_allowed_conditions": [
-        "count(panels)==1",
-        "hidden_triggers==false",
-        "insurance_type!='insurance'",
-        "airbag_light!=true"
-      ]
-    }
-  }
-}
-
-  ],
-
-  "examples": {
-    "panel_job_example": {
-      "panels": ["door_left_front"],
-      "options": { "pearl": true, "blends": ["fender_left"], "extraPrepHours": { "door_left_front": 2 }, "oversize": false, "rush": false, "paymentMethod": "cash" }
-    },
-    "insurance_example": {
-      "panels": ["rear_bumper"],
-      "options": { "insurance": { "isInsurance": true, "claimOpen": true } }
-    }
-  }
-}
-{
-  "meta": { "version": "2025-08-11-v1.1" },
-
   "parts_policy": {
     "use_oem_for_safety_components": true,
     "allowed_non_oem_for_exterior": ["aftermarket", "LKQ/CAPA"],
     "require_customer_approval_if_non_oem": true,
     "document_brand_on_invoice": true,
-    "restocking_fee_percent": null, 
     "notes": [
       "Safety components (airbags, seatbelts, sensors, crash bars, steering, suspension) = OEM only.",
       "Exterior bolt-on cosmetic parts can use aftermarket/LKQ with customer consent."
@@ -372,33 +182,28 @@
 
   "parts_pricing": {
     "source": "cost_plus_markup",
-    "markup_percent": null,
+    "markup_percent": 35,
     "min_markup_dollars": 0,
-    "include_shipping_in_cost": true
+    "include_shipping_in_cost": true,
+    "restocking_fee_percent": 25
   },
 
   "operations": {
-    "hours_strategy": {
-      "prefer_estimator_hours": true,
-      "fallback_table_enabled": true
-    },
+    "hours_strategy": { "prefer_estimator_hours": true, "fallback_table_enabled": true },
     "fallback_hours": {
       "bumper_cover_replace": { "min": 1.5, "max": 3.0 },
-      "fender_replace":       { "min": 2.0, "max": 3.5 },
-      "door_shell_replace":   { "min": 3.5, "max": 5.0 },
-      "hood_replace":         { "min": 1.5, "max": 3.0 },
-      "radiator_support":     { "min": 4.0, "max": 7.0 },
-      "headlamp_replace":     { "min": 0.5, "max": 1.5 },
-      "taillamp_replace":     { "min": 0.5, "max": 1.0 },
-      "grille_replace":       { "min": 0.7, "max": 1.5 },
-      "mirror_replace":       { "min": 0.4, "max": 1.0 },
-      "glass_windshield":     { "min": 2.0, "max": 3.5 },
-      "glass_door":           { "min": 1.0, "max": 2.0 }
+      "fender_replace": { "min": 2.0, "max": 3.5 },
+      "door_shell_replace": { "min": 3.5, "max": 5.0 },
+      "hood_replace": { "min": 1.5, "max": 3.0 },
+      "radiator_support": { "min": 4.0, "max": 7.0 },
+      "headlamp_replace": { "min": 0.5, "max": 1.5 },
+      "taillamp_replace": { "min": 0.5, "max": 1.0 },
+      "grille_replace": { "min": 0.7, "max": 1.5 },
+      "mirror_replace": { "min": 0.4, "max": 1.0 },
+      "glass_windshield": { "min": 2.0, "max": 3.5 },
+      "glass_door": { "min": 1.0, "max": 2.0 }
     },
-    "rinr_definitions": {
-      "r_and_r": "Remove and Replace",
-      "r_and_i": "Remove and Install original part; no replacement"
-    },
+    "rinr_definitions": { "r_and_r": "Remove and Replace", "r_and_i": "Remove and Install original part; no replacement" },
     "new_part_prep": {
       "prime_bare_metal_or_plastic": true,
       "per_panel_prep_fee_min": 50,
@@ -408,15 +213,11 @@
   },
 
   "structural_frame": {
-    "use_frame_rate": false,
-    "frame_rate_per_hour": null,
+    "use_frame_rate": true,
+    "frame_rate_per_hour": 95,
     "frame_rate_multiplier_over_labor": 1.0,
     "measure_set_up_flat": null,
-    "ops": [
-      "Diagnosis & measurements",
-      "Pulls and anchoring",
-      "Sectioning (when applicable, per OEM procedures)"
-    ],
+    "ops": ["Diagnosis & measurements","Pulls and anchoring","Sectioning (when applicable, per OEM procedures)"],
     "guardrails": [
       "If structural or rail damage suspected, quote requires in-shop inspection and measurements (no online price).",
       "Follow OEM repair procedures; if sectioning not allowed, replace assembly."
@@ -426,11 +227,11 @@
   "glass_policy": {
     "subcontract_allowed": true,
     "internal_or_partner": "Precision ADAS / partner",
-    "pricing": "case_by_case",
+    "pricing": "lookup",
+    "lookup_source": "AI/Estimator integration",
     "notes": [
-      "Windshield cracks in driver’s sweep => recommend replace.",
-      "Chip repair only if small and outside primary view.",
-      "Always assess rain sensor/HUD/ADAS camera mounts."
+      "Windshield pricing depends on vehicle model, year, options (HUD, rain sensors, ADAS cameras).",
+      "Use AI call to pull accurate part and calibration cost for that VIN."
     ]
   },
 
@@ -503,7 +304,7 @@
 
   "calc_extensions": {
     "part_replacement_line": {
-      "fields": ["part_name", "oem_or_non_oem", "part_cost", "markup_dollars", "labor_hours", "materials_hours"],
+      "fields": ["part_name","oem_or_non_oem","part_cost","markup_dollars","labor_hours","materials_hours"],
       "compute": [
         "part_sell = part_cost + max(markup_dollars, part_cost * (parts_pricing.markup_percent || 0)/100)",
         "labor_total = labor_hours * rates.labor_per_hour",
@@ -513,7 +314,7 @@
     },
     "auto_blend_rule_on_new_parts": {
       "apply": true,
-      "panels_to_consider": ["adjacent_panel_1", "adjacent_panel_2"],
+      "panels_to_consider": ["adjacent_panel_1","adjacent_panel_2"],
       "blend_fee_per_panel_min": 100,
       "blend_fee_per_panel_max": 125
     }
@@ -523,130 +324,168 @@
     "Never quote SRS or structural work online as a hard dollar; return 'inspection_required'.",
     "If ADAS triggers present, add calibration line item with range and flag as required.",
     "If using non-OEM exterior parts, disclose brand, fitment risk, and finish differences."
-  ]
-}
-{
-  "parts_pricing": {
-    "source": "cost_plus_markup",
-    "markup_percent": 35,
-    "min_markup_dollars": 0,
-    "include_shipping_in_cost": true,
-    "restocking_fee_percent": 25
-  },
+  ],
 
-  "labor_rates": {
-    "frame_per_hour": 95,
-    "mechanical_per_hour": 125,
-    "aluminum_per_hour": 125
-  },
-
-  "glass_policy": {
-    "pricing": "lookup",
-    "lookup_source": "AI/Estimator integration",
-    "notes": [
-      "Windshield pricing depends on vehicle model, year, options (HUD, rain sensors, ADAS cameras).",
-      "Use AI call to pull accurate part and calibration cost for that VIN."
+  "hidden_damage_policy": {
+    "principle": "If we can’t see behind a bumper/panel, the initial price is a PRELIMINARY estimate. Final pricing follows teardown and documented findings.",
+    "triggers": [
+      "Impact to bumper/fender/quarter with misalignment or gaps",
+      "Liftgate/tailgate won’t close or latch",
+      "Headlamp/taillamp loose or moisture inside",
+      "AC condenser/radiator visible or bent",
+      "Sensor/bracket areas disturbed (radar/camera/park sensors)"
+    ],
+    "customer_message": "There may be hidden damage behind the panel. We’ll tear down, photo everything, and send an updated line-item estimate before any extra work.",
+    "teardown_authorization": {
+      "required": true,
+      "rate_key": "labor_per_hour",
+      "default_hours_cap": 2.0,
+      "bill_if_no_go": true,
+      "notes": "Covers remove/inspect/reinstall to expose damage. Applied to repair if approved."
+    },
+    "booking_priority": {
+      "rule": "If hidden damage triggers present, structural/SRS/ADAS work required, or part replacement suspected — skip final quote and push appointment booking.",
+      "cta_text": "Best next step is to book you in for a quick teardown so we can give you an exact number.",
+      "booking_channels": ["phone_call","sms","online_booking_link"]
+    },
+    "supplement_workflow": {
+      "steps": [
+        "Tear down and inspect",
+        "Photo+video documentation of all additional damage",
+        "Write supplement lines (parts, labor, materials, calibrations)",
+        "Send customer updated estimate for approval",
+        "On insurance jobs, submit supplement to carrier/adjuster",
+        "Proceed only after approval"
+      ],
+      "approval_method": "sms_link_or_email",
+      "no_work_without_approval": true
+    },
+    "documentation": {
+      "require_photos": true,
+      "store_before_after": true,
+      "share_with_customer": true,
+      "share_with_adjuster_if_insurance": true
+    },
+    "uncertainty_rules": {
+      "sight_unseen_multiplier": {
+        "minor_hit": { "low_extra_percent": 10, "high_extra_percent": 20 },
+        "moderate_hit": { "low_extra_percent": 15, "high_extra_percent": 30 },
+        "severe_hit": { "low_extra_percent": 25, "high_extra_percent": 45 }
+      },
+      "apply_when": [
+        "Customer provides limited photos",
+        "Impact with potential internal damage",
+        "Fitment/alignment issues visible"
+      ],
+      "disclosure_text": "Range includes a contingency for possible hidden damage. We’ll confirm after teardown."
+    },
+    "communication_templates": {
+      "hidden_damage_intro": "Heads up — damage like this can hide cracked brackets, absorbers, or sensors behind the bumper. We’ll do a quick teardown, photo everything, and text you an updated, itemized estimate before we continue.",
+      "teardown_consent": "To get you an exact number, we’ll authorize up to {{hours_cap}} hours for teardown/inspection. If you approve repair, that time is part of the job; if you decline, it’s billed separately.",
+      "supplement_update": "We found additional damage behind the panel: {{list}}. Here’s the updated line-item estimate. Approve to proceed or reply with questions.",
+      "transparency_commitment": "Every change is documented with photos and line items so you know exactly what you’re paying for.",
+      "booking_push": "Best way forward is to get you booked in for teardown. That’s the only way to know the exact scope and parts list."
+    },
+    "guardrails": [
+      "Never promise final pricing before teardown when triggers present",
+      "If structural/SRS found, switch to inspection_required flow",
+      "If ADAS components moved/replaced, add calibration lines"
     ]
   },
 
-  "oem_vs_aftermarket": {
-    "oem": {
-      "description": "OEM parts are made by the original manufacturer of the vehicle. Perfect fitment, same specs as factory, and backed by OEM warranty.",
-      "pros": ["Exact fit", "Meets crash/safety standards", "OEM finish quality"],
-      "cons": ["Higher cost"]
+  "sales_language": {
+    "sanding": "We sand so the new paint sticks to the old. Better adhesion, smoother finish.",
+    "sealer": "Sealer evens the surface so it doesn’t look like a checkerboard. Cleaner color, better coverage.",
+    "upgrade_to_bcc": "Basecoat-clear gives deeper gloss and longer life. If you care about look and resale, this is it.",
+    "warranty_pitch": "We stand behind the work. All warranties are prorated and documented — no games.",
+    "fleet_positioning": "We price fair and fast. Volume gets priority scheduling and consistent rates."
+  },
+
+  "guardrails": [
+    "Never quote full-vehicle unless user asks for full paint OR multiple panels exceed 70% of the car.",
+    "If user mentions a single area, quote only that panel plus required blends.",
+    "Always request 3–5 photos and VIN if unclear.",
+    "Do not stack matte with pearl unless user confirms (rare combo)."
+  ],
+
+  "intake_flow": {
+    "style": "guided_qna",
+    "goal": "Book teardown or shop visit first; only give firm numbers on simple visible panel jobs.",
+    "states": [
+      { "id": "greet", "prompt": "Hey, I’m Collision Club. What’s going on with the car?", "capture": ["free_text_issue"], "next": "vehicle_info" },
+      { "id": "vehicle_info", "prompt": "Got it. What’s the year, make, model? If you have the VIN, drop it too.", "capture": ["year","make","model","vin?"], "validate": { "year": ">=1995" }, "next": "scope_panels" },
+      { "id": "scope_panels", "prompt": "Which area is affected? Example: rear bumper, right fender, left front door.", "capture": ["panels[]"], "assist": "Map user words to panel_aliases.", "next": "safety_check" },
+      { "id": "safety_check", "prompt": "Is it drivable and safe? Any airbags, warning lights, or doors not closing?", "capture": ["is_drivable","airbag_light?","doors_latch?"], "branch": [{ "if": "airbag_light==true", "to": "srs_path" }, { "else": "insurance_check" }] },
+      { "id": "insurance_check", "prompt": "Is this through insurance or self-pay?", "capture": ["insurance_type"], "options": ["insurance","self_pay","not_sure"], "branch": [{ "if": "insurance_type==insurance", "to": "insurance_intake" }, { "else": "hidden_damage_check" }] },
+      { "id": "hidden_damage_check", "prompt": "Any gaps, parts loose, lamps with moisture, or hood/doors not lining up?", "capture": ["misalignment?","loose_parts?","lamp_moisture?","cooling_visible?","sensor_area_hit?"], "derive": { "hidden_triggers": "any(misalignment,loose_parts,lamp_moisture,cooling_visible,sensor_area_hit)" }, "branch": [{ "if": "hidden_triggers==true", "to": "booking_push" }, { "else": "finish_type" }] },
+      { "id": "finish_type", "prompt": "Paint finish: is it a pearl/matte or regular color?", "capture": ["is_pearl?","is_matte?"], "next": "photo_request" },
+      { "id": "photo_request", "prompt": "Shoot over 3–5 photos of the damage (close + 6–8 ft away) and the VIN plate. Text to 267-212-1034.", "capture": ["photos_uploaded?"], "next": "path_decision" },
+      { "id": "path_decision", "derive": { "is_simple_panel": "count(panels)==1 && hidden_triggers==false && insurance_type!='insurance' && airbag_light!=true" }, "branch": [{ "if": "is_simple_panel==true", "to": "simple_quote_preview" }, { "else": "booking_push" }] },
+      { "id": "simple_quote_preview", "prompt": "Based on what you sent, here’s a preliminary range for that panel with pro finish. We’ll confirm exact price in-shop.", "action": "build_range_using_panel_paint_base + modifiers + tax/fees + min_invoice_total; DO NOT offer full-vehicle.", "followup": "close_to_booking", "next": "close_to_booking" },
+      { "id": "booking_push", "prompt": "{{booking_script}}", "action": "Offer earliest teardown slot; collect day/time preference.", "capture": ["preferred_day","preferred_time","contact_method"], "next": "book_appointment" },
+      { "id": "book_appointment", "prompt": "Locked. I’ll text you the appointment details and what to bring. Anything else you want us to check while it’s in?", "capture": ["extra_requests?"], "action": "Send SMS confirm; attach shop address and drop-off instructions.", "end": true },
+
+      { "id": "insurance_intake", "prompt": "No problem. Do you already have a claim open? If yes, what’s the carrier and claim number?", "capture": ["claim_open","carrier?","claim_number?","adjuster_name?","adjuster_phone?","deductible_amount?"], "branch": [{ "if": "claim_open==true", "to": "insurance_claim_open_flow" }, { "else": "insurance_no_claim_flow" }] },
+      { "id": "insurance_no_claim_flow", "prompt": "{{insurance_no_claim_script}}", "action": "Guide to file claim; collect photos + VIN; push booking for inspection/CCC estimate.", "next": "booking_push" },
+      { "id": "insurance_claim_open_flow", "prompt": "{{insurance_claim_open_script}}", "action": "Collect adjuster info; request their estimate if available; push booking for supplements.", "next": "booking_push" },
+
+      { "id": "srs_path", "prompt": "Since an airbag or SRS light is involved, we’ll need an in-shop inspection and scans before pricing.", "action": "Booking-first; no pricing. Explain scan-before/after and OEM-only parts.", "next": "booking_push" }
+    ],
+    "scripts": {
+      "booking_script": "Best next step is to get you on the schedule for a quick teardown/inspection so we can give you an exact number. We’ll photo everything and send a line-item before any extra work. What works — today, tomorrow, or later this week?",
+      "close_to_booking": "Want to lock a time? We can get you in fast. We’ll walk you through the finish and warranty options in person.",
+      "insurance_no_claim_script": "We’ll inspect and write a CCC estimate first, then you file the claim — we’ll guide you. We send the estimate + photos to your adjuster and handle supplements. Let’s book you in so we can get that started.",
+      "insurance_claim_open_script": "Perfect. Share the carrier, claim #, and adjuster contact. We’ll review their estimate, write supplements for anything missed, and handle the back-and-forth. Let’s get you booked so we can start.",
+      "oem_vs_aftermarket_explain": "OEM fits like factory and meets safety specs; higher cost. Aftermarket/LKQ can save money but may need extra prep and doesn’t carry OEM warranty. For safety parts we only use OEM."
     },
-    "aftermarket": {
-      "description": "Aftermarket parts are made by third-party companies. Quality can range from excellent to poor, depending on the manufacturer.",
-      "pros": ["Lower cost", "Some brands offer equal quality to OEM", "Quicker availability"],
-      "cons": ["Potential fitment issues", "Different corrosion protection", "No OEM warranty"]
-    },
-    "lkq_capa": {
-      "description": "LKQ or CAPA-certified parts are recycled OEM or certified aftermarket parts inspected for quality.",
-      "pros": ["OEM fit from recycled parts", "Eco-friendly", "Often cheaper than new OEM"],
-      "cons": ["May have prior wear", "Finish may need more prep"]
+    "outputs": {
+      "booking_first_conditions": [
+        "hidden_triggers==true",
+        "insurance_type=='insurance'",
+        "airbag_light==true",
+        "count(panels)>1",
+        "sensor_area_hit==true",
+        "structural_or_frame_suspected==true",
+        "replacement_suspected==true"
+      ],
+      "quote_allowed_conditions": [
+        "count(panels)==1",
+        "hidden_triggers==false",
+        "insurance_type!='insurance'",
+        "airbag_light!=true"
+      ]
     }
   },
 
-  "customer_journey": {
-    "style": "guided_qna",
-    "steps": [
-      "Greet and identify the customer’s immediate concern.",
-      "Ask for vehicle info: year, make, model, VIN.",
-      "Ask for damage location(s) and whether part is damaged beyond repair.",
-      "Ask if vehicle is drivable and safe.",
-      "Ask if insurance is involved or self-pay.",
-      "Discuss repair vs replace options, explaining OEM vs aftermarket trade-offs.",
-      "If replacement: check part availability, pricing, and any ADAS calibration requirements.",
-      "If repair: explain process, warranty, and any prep required.",
-      "Summarize recommended plan with itemized pricing.",
-      "End with call to action — schedule drop-off or send photos."
-    ]
+  "calc_rules": [
+    "For panel jobs: start with panel_paint_base per panel.",
+    "Add modifiers: pearl per panel; blend where requested; extra_prep hours -> labor + paint materials.",
+    "If sealer needed on panel jobs, add vehicle-level sealer per sealer_rule.",
+    "Oversize adds flat range if triggers present.",
+    "Rush adds 10% to subtotal (before tax/fees).",
+    "Sales tax on subtotal after rush.",
+    "Card fee only if payment method is card, applied on (subtotal + tax).",
+    "Round totals to nearest $5 if rounding_apply is true.",
+    "Apply min_invoice_total if calculated total is less than the minimum."
+  ],
+
+  "examples": {
+    "panel_job_example": {
+      "panels": ["door_left_front"],
+      "options": {
+        "pearl": true,
+        "blends": ["fender_left"],
+        "extraPrepHours": { "door_left_front": 2 },
+        "oversize": false,
+        "rush": false,
+        "paymentMethod": "cash"
+      }
+    },
+    "insurance_example": {
+      "panels": ["rear_bumper"],
+      "options": { "insurance": { "isInsurance": true, "claimOpen": true } }
+    }
   }
 }
-"hidden_damage_policy": {
-  "principle": "If we can’t see behind a bumper/panel, the initial price is a PRELIMINARY estimate. Final pricing follows teardown and documented findings.",
-  "triggers": [
-    "Impact to bumper/fender/quarter with misalignment or gaps",
-    "Liftgate/tailgate won’t close or latch",
-    "Headlamp/taillamp loose or moisture inside",
-    "AC condenser/radiator visible or bent",
-    "Sensor/bracket areas disturbed (radar/camera/park sensors)"
-  ],
-  "customer_message": "There may be hidden damage behind the panel. We’ll tear down, photo everything, and send an updated line-item estimate before any extra work.",
-  "teardown_authorization": {
-    "required": true,
-    "rate_key": "labor_per_hour",
-    "default_hours_cap": 2.0,
-    "bill_if_no_go": true,
-    "notes": "Covers remove/inspect/reinstall to expose damage. Applied to repair if approved."
-  },
-  "booking_priority": {
-    "rule": "If hidden damage triggers present, structural/SRS/ADAS work required, or part replacement suspected — skip final quote and push appointment booking.",
-    "cta_text": "Best next step is to book you in for a free in-shop teardown so we can give you an exact number.",
-    "booking_channels": ["phone_call", "sms", "online_booking_link"]
-  },
-  "supplement_workflow": {
-    "steps": [
-      "Tear down and inspect",
-      "Photo+video documentation of all additional damage",
-      "Write supplement lines (parts, labor, materials, calibrations)",
-      "Send customer updated estimate for approval",
-      "On insurance jobs, submit supplement to carrier/adjuster",
-      "Proceed only after approval"
-    ],
-    "approval_method": "sms_link_or_email",
-    "no_work_without_approval": true
-  },
-  "documentation": {
-    "require_photos": true,
-    "store_before_after": true,
-    "share_with_customer": true,
-    "share_with_adjuster_if_insurance": true
-  },
-  "uncertainty_rules": {
-    "sight_unseen_multiplier": {
-      "minor_hit": { "low_extra_percent": 10, "high_extra_percent": 20 },
-      "moderate_hit": { "low_extra_percent": 15, "high_extra_percent": 30 },
-      "severe_hit": { "low_extra_percent": 25, "high_extra_percent": 45 }
-    },
-    "apply_when": [
-      "Customer provides limited photos",
-      "Impact with potential internal damage",
-      "Fitment/alignment issues visible"
-    ],
-    "disclosure_text": "Range includes a contingency for possible hidden damage. We’ll confirm after teardown."
-  },
-  "communication_templates": {
-    "hidden_damage_intro": "Heads up — damage like this can hide cracked brackets, absorbers, or sensors behind the bumper. We’ll do a quick teardown, photo everything, and text you an updated, itemized estimate before we continue.",
-    "teardown_consent": "To get you an exact number, we’ll authorize up to {{hours_cap}} hours for teardown/inspection. If you approve repair, that time is part of the job; if you decline, it’s billed separately.",
-    "supplement_update": "We found additional damage behind the panel: {{list}}. Here’s the updated line-item estimate. Approve to proceed or reply with questions.",
-    "transparency_commitment": "Every change is documented with photos and line items so you know exactly what you’re paying for.",
-    "booking_push": "Best way forward is to get you booked in for teardown. That’s the only way to know the exact scope and parts list."
-  },
-  "guardrails": [
-    "Never promise final pricing before teardown when triggers present",
-    "If structural/SRS found, switch to inspection_required flow",
-    "If ADAS components moved/replaced, add calibration lines"
-  ]
-}
+
 
