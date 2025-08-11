@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "brand": "Collision Club",
+    "currency": "USD",
+    "version": "2025-08-11",
+    "notes": [
+      "Panel-first quoting. Never quote whole car unless user explicitly asks.",
+      "Always show low–high with add-ons called out as line items.",
+      "All warranties are prorated."
+    ]
+  },
+
+  "rates": {
+    "labor_per_hour": 65,
+    "materials_paint_per_hour": 44,
+    "materials_body_per_hour": 14
+  },
+
+  "packages_full_vehicle": {
+    "single_stage_enamel": {
+      "base_price": 599,
+      "warranty_years": "1-2",
+      "addons": {
+        "uv_enamel_upgrade": { "price": 100, "blurb": "UV protection enamel upgrade" }
+      }
+    },
+    "single_stage_urethane": {
+      "base_price": 799,
+      "warranty_years": "3-4",
+      "addons": {
+        "integrated_clear": { "price": 100, "blurb": "Integrated clear add-on" }
+      }
+    },
+    "basecoat_clear": {
+      "base_price": 1500,
+      "warranty_years": "5",
+      "addons": {
+        "performance_clear": { "price": 500, "blurb": "Performance clear upgrade" },
+        "matte_finish": { "price": 500, "blurb": "Matte finish add-on" }
+      }
+    },
+    "global_addons": {
+      "sand_vehicle": { "price": 299 },
+      "sealer_vehicle": { "price": 299, "range_max_if_bigger": 500 }
+    }
+  },
+
+  "panel_paint_base": {
+    "bumper": { "min": 400, "max": 600 },
+    "fender": { "min": 400, "max": 600 },
+    "door":   { "min": 400, "max": 700 },
+    "quarter":{ "min": 400, "max": 1000 },
+    "roof_damage": { "min": 400, "max": 700 },
+    "hood": { "min": 400, "max": 700 },
+    "tailgate_liftgate": { "min": 400, "max": 800 }
+  },
+
+  "panel_modifiers": {
+    "pearl_effect": { "type": "flat", "per_panel": true, "min": 100, "max": 150 },
+    "blend_adjacent_panel": { "type": "flat", "per_panel": true, "min": 100, "max": 125 },
+    "extra_prep": {
+      "per_panel_hours_min": 1,
+      "per_panel_hours_max": 3,
+      "explain": "Heavily faded/peeling/rough surfaces; charge labor+materials per hour"
+    },
+    "sealer_rule": {
+      "apply_to": "overall jobs always; panel jobs only when checkerboard/multiple substrates",
+      "vehicle_level_price": { "min": 299, "max": 500 }
+    },
+    "oversize_vehicle": { "flat_min": 300, "flat_max": 1000, "explain": "Size/height, paint volume, masking complexity" }
+  },
+
+  "bodywork_menu": {
+    "small_dent":   { "min": 75,  "max": 150 },
+    "medium_dent":  { "min": 200, "max": 300 },
+    "large_dent":   { "min": 400, "max": 600 },
+    "rust_repair":  { "pricing": "case_by_case", "notes": "Grinding/fill vs cut/weld; can get expensive" }
+  },
+
+  "labor_calc": {
+    "materials_for_bodywork_hours_uses": "materials_body_per_hour",
+    "materials_for_paint_hours_uses": "materials_paint_per_hour",
+    "rules": [
+      "If extra_prep hours > 0, add labor_per_hour * hours plus materials_paint_per_hour * hours.",
+      "If bodywork chosen, add body labor time from estimator and materials_body_per_hour * hours."
+    ]
+  },
+
+  "warranty": {
+    "panel_jobs": "follows paint system chosen for that panel; prorated",
+    "full_vehicle": "as listed in packages_full_vehicle; prorated"
+  },
+
+  "matching_policy": {
+    "match_and_beat": true,
+    "beat_percent": 5,
+    "conditions": [
+      "Comparable scope and materials",
+      "Written estimate proof",
+      "Excludes non-like items (e.g., touch-up only vs refinish)"
+    ]
+  },
+
+  "sales_language": {
+    "sanding": "We sand so the new paint sticks to the old. Better adhesion, smoother finish.",
+    "sealer": "Sealer evens the surface so it doesn’t look like a checkerboard. Cleaner color, better coverage.",
+    "upgrade_to_bcc": "Basecoat-clear gives deeper gloss and longer life. If you care about look and resale, this is it.",
+    "warranty_pitch": "We stand behind the work. All warranties are prorated and documented — no games.",
+    "fleet_positioning": "We price fair and fast. Volume and repeat work get priority scheduling and consistent rates."
+  },
+
+  "guardrails": [
+    "Never quote a full-vehicle repaint unless the customer explicitly requests 'full paint' or multiple panels exceed 70% of the car.",
+    "If user mentions single area (e.g., 'rear door'), scope only that panel + any required blends.",
+    "Always itemize: panel price, bodywork, extra prep hours, blends, pearls, sealer, oversize, tax (if applicable).",
+    "Always ask for 3–5 photos and VIN if unclear."
+  ],
+
+  "intake_questions": [
+    "Which panel(s) are damaged or getting painted?",
+    "Any dents, rust, or peeling clear?",
+    "Color code or VIN?",
+    "Is it a pearl/matte/special finish?",
+    "Timeline — standard or rush?",
+    "Is it retail or fleet/dealer?"
+  ]
+}
