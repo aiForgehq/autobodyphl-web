@@ -373,3 +373,61 @@
     "If using non-OEM exterior parts, disclose brand, fitment risk, and finish differences."
   ]
 }
+{
+  "parts_pricing": {
+    "source": "cost_plus_markup",
+    "markup_percent": 35,
+    "min_markup_dollars": 0,
+    "include_shipping_in_cost": true,
+    "restocking_fee_percent": 25
+  },
+
+  "labor_rates": {
+    "frame_per_hour": 95,
+    "mechanical_per_hour": 125,
+    "aluminum_per_hour": 125
+  },
+
+  "glass_policy": {
+    "pricing": "lookup",
+    "lookup_source": "AI/Estimator integration",
+    "notes": [
+      "Windshield pricing depends on vehicle model, year, options (HUD, rain sensors, ADAS cameras).",
+      "Use AI call to pull accurate part and calibration cost for that VIN."
+    ]
+  },
+
+  "oem_vs_aftermarket": {
+    "oem": {
+      "description": "OEM parts are made by the original manufacturer of the vehicle. Perfect fitment, same specs as factory, and backed by OEM warranty.",
+      "pros": ["Exact fit", "Meets crash/safety standards", "OEM finish quality"],
+      "cons": ["Higher cost"]
+    },
+    "aftermarket": {
+      "description": "Aftermarket parts are made by third-party companies. Quality can range from excellent to poor, depending on the manufacturer.",
+      "pros": ["Lower cost", "Some brands offer equal quality to OEM", "Quicker availability"],
+      "cons": ["Potential fitment issues", "Different corrosion protection", "No OEM warranty"]
+    },
+    "lkq_capa": {
+      "description": "LKQ or CAPA-certified parts are recycled OEM or certified aftermarket parts inspected for quality.",
+      "pros": ["OEM fit from recycled parts", "Eco-friendly", "Often cheaper than new OEM"],
+      "cons": ["May have prior wear", "Finish may need more prep"]
+    }
+  },
+
+  "customer_journey": {
+    "style": "guided_qna",
+    "steps": [
+      "Greet and identify the customer’s immediate concern.",
+      "Ask for vehicle info: year, make, model, VIN.",
+      "Ask for damage location(s) and whether part is damaged beyond repair.",
+      "Ask if vehicle is drivable and safe.",
+      "Ask if insurance is involved or self-pay.",
+      "Discuss repair vs replace options, explaining OEM vs aftermarket trade-offs.",
+      "If replacement: check part availability, pricing, and any ADAS calibration requirements.",
+      "If repair: explain process, warranty, and any prep required.",
+      "Summarize recommended plan with itemized pricing.",
+      "End with call to action — schedule drop-off or send photos."
+    ]
+  }
+}
