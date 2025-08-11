@@ -182,14 +182,166 @@
     "Do not stack matte with pearl unless user confirms (rare combo)."
   ],
 
-  "intake_questions": [
-    "Which panel(s) are damaged or getting painted?",
-    "Any dents, rust, or peeling clear?",
-    "Color code or VIN?",
-    "Is it pearl/matte/special finish?",
-    "Timeline — standard or rush?",
-    "Retail or fleet/dealer?",
-    "Insurance involved?"
+ {
+  "meta": { "version": "2025-08-11-v1.3" },
+
+  "intake_flow": {
+    "style": "guided_qna",
+    "goal": "Book teardown or shop visit first; only give firm numbers on simple visible panel jobs.",
+    "states": [
+      {
+        "id": "greet",
+        "prompt": "Hey, I’m Collision Club. What’s going on with the car?",
+        "capture": ["free_text_issue"],
+        "next": "vehicle_info"
+      },
+      {
+        "id": "vehicle_info",
+        "prompt": "Got it. What’s the year, make, model? If you have the VIN, drop it too.",
+        "capture": ["year","make","model","vin?"],
+        "validate": { "year": ">=1995" },
+        "next": "scope_panels"
+      },
+      {
+        "id": "scope_panels",
+        "prompt": "Which area is affected? Example: rear bumper, right fender, left front door.",
+        "capture": ["panels[]"],
+        "assist": "Map user words to panel_aliases.",
+        "next": "safety_check"
+      },
+      {
+        "id": "safety_check",
+        "prompt": "Is it drivable and safe? Any airbags, warning lights, or doors not closing?",
+        "capture": ["is_drivable","airbag_light?","doors_latch?"],
+        "branch": [
+          { "if": "airbag_light==true", "to": "srs_path" },
+          { "else": "insurance_check" }
+        ]
+      },
+      {
+        "id": "insurance_check",
+        "prompt": "Is this through insurance or self-pay?",
+        "capture": ["insurance_type"], 
+        "options": ["insurance","self_pay","not_sure"],
+        "branch": [
+          { "if": "insurance_type==insurance", "to": "insurance_intake" },
+          { "else": "hidden_damage_check" }
+        ]
+      },
+      {
+        "id": "hidden_damage_check",
+        "prompt": "Any gaps, parts loose, lamps with moisture, or hood/doors not lining up?",
+        "capture": ["misalignment?","loose_parts?","lamp_moisture?","cooling_visible?","sensor_area_hit?"],
+        "derive": { "hidden_triggers": "any(misalignment,loose_parts,lamp_moisture,cooling_visible,sensor_area_hit)" },
+        "branch": [
+          { "if": "hidden_triggers==true", "to": "booking_push" },
+          { "else": "finish_type" }
+        ]
+      },
+      {
+        "id": "finish_type",
+        "prompt": "Paint finish: is it a pearl/matte or regular color?",
+        "capture": ["is_pearl?","is_matte?"],
+        "next": "photo_request"
+      },
+      {
+        "id": "photo_request",
+        "prompt": "Shoot over 3–5 photos of the damage (close + 6–8 ft away) and the VIN plate. Text to 267-212-1034.",
+        "capture": ["photos_uploaded?"],
+        "next": "path_decision"
+      },
+      {
+        "id": "path_decision",
+        "derive": {
+          "is_simple_panel": "count(panels)==1 && hidden_triggers==false && insurance_type!='insurance' && airbag_light!=true"
+        },
+        "branch": [
+          { "if": "is_simple_panel==true", "to": "simple_quote_preview" },
+          { "else": "booking_push" }
+        ]
+      },
+      {
+        "id": "simple_quote_preview",
+        "prompt": "Based on what you sent, here’s a **preliminary** range for that panel with pro finish. We’ll confirm exact price in-shop.",
+        "action": "build_range_using_panel_paint_base + modifiers + tax/fees + min_invoice_total; DO NOT offer full-vehicle.",
+        "followup": "close_to_booking",
+        "next": "close_to_booking"
+      },
+      {
+        "id": "booking_push",
+        "prompt": "{{booking_script}}",
+        "action": "Offer earliest teardown slot; collect day/time preference.",
+        "capture": ["preferred_day","preferred_time","contact_method"],
+        "next": "book_appointment"
+      },
+      {
+        "id": "book_appointment",
+        "prompt": "Locked. I’ll text you the appointment details and what to bring. Anything else you want us to check while it’s in?",
+        "capture": ["extra_requests?"],
+        "action": "Send SMS confirm; attach shop address and drop-off instructions.",
+        "end": true
+      },
+
+      /* Insurance path */
+      {
+        "id": "insurance_intake",
+        "prompt": "No problem. Do you already have a claim open? If yes, what’s the carrier and claim number?",
+        "capture": ["claim_open","carrier?","claim_number?","adjuster_name?","adjuster_phone?","deductible_amount?"],
+        "branch": [
+          { "if": "claim_open==true", "to": "insurance_claim_open_flow" },
+          { "else": "insurance_no_claim_flow" }
+        ]
+      },
+      {
+        "id": "insurance_no_claim_flow",
+        "prompt": "{{insurance_no_claim_script}}",
+        "action": "Guide to file claim; collect photos + VIN; push booking for inspection/CCC estimate.",
+        "next": "booking_push"
+      },
+      {
+        "id": "insurance_claim_open_flow",
+        "prompt": "{{insurance_claim_open_script}}",
+        "action": "Collect adjuster info; request their estimate if available; push booking for supplements.",
+        "next": "booking_push"
+      },
+
+      /* SRS / Airbag path */
+      {
+        "id": "srs_path",
+        "prompt": "Since an airbag or SRS light is involved, we’ll need an in-shop inspection and scans before pricing.",
+        "action": "Booking-first; no pricing. Explain scan-before/after and OEM-only parts.",
+        "next": "booking_push"
+      }
+    ],
+
+    "scripts": {
+      "booking_script": "Best next step is to get you on the schedule for a quick teardown/inspection so we can give you an exact number. We’ll photo everything and send a line-item before any extra work. What works — today, tomorrow, or later this week?",
+      "close_to_booking": "Want to lock a time? We can get you in fast. We’ll walk you through the finish and warranty options in person.",
+      "insurance_no_claim_script": "We’ll inspect and write a CCC estimate first, then you file the claim — we’ll guide you. We send the estimate + photos to your adjuster and handle supplements. Let’s book you in so we can get that started.",
+      "insurance_claim_open_script": "Perfect. Share the carrier, claim #, and adjuster contact. We’ll review their estimate, write supplements for anything missed, and handle the back-and-forth. Let’s get you booked so we can start.",
+      "oem_vs_aftermarket_explain": "OEM fits like factory and meets safety specs; higher cost. Aftermarket/LKQ can save money but may need extra prep and doesn’t carry OEM warranty. For safety parts we only use OEM."
+    },
+
+    "outputs": {
+      "booking_first_conditions": [
+        "hidden_triggers==true",
+        "insurance_type=='insurance'",
+        "airbag_light==true",
+        "count(panels)>1",
+        "sensor_area_hit==true",
+        "structural_or_frame_suspected==true",
+        "replacement_suspected==true"
+      ],
+      "quote_allowed_conditions": [
+        "count(panels)==1",
+        "hidden_triggers==false",
+        "insurance_type!='insurance'",
+        "airbag_light!=true"
+      ]
+    }
+  }
+}
+
   ],
 
   "examples": {
@@ -431,3 +583,70 @@
     ]
   }
 }
+"hidden_damage_policy": {
+  "principle": "If we can’t see behind a bumper/panel, the initial price is a PRELIMINARY estimate. Final pricing follows teardown and documented findings.",
+  "triggers": [
+    "Impact to bumper/fender/quarter with misalignment or gaps",
+    "Liftgate/tailgate won’t close or latch",
+    "Headlamp/taillamp loose or moisture inside",
+    "AC condenser/radiator visible or bent",
+    "Sensor/bracket areas disturbed (radar/camera/park sensors)"
+  ],
+  "customer_message": "There may be hidden damage behind the panel. We’ll tear down, photo everything, and send an updated line-item estimate before any extra work.",
+  "teardown_authorization": {
+    "required": true,
+    "rate_key": "labor_per_hour",
+    "default_hours_cap": 2.0,
+    "bill_if_no_go": true,
+    "notes": "Covers remove/inspect/reinstall to expose damage. Applied to repair if approved."
+  },
+  "booking_priority": {
+    "rule": "If hidden damage triggers present, structural/SRS/ADAS work required, or part replacement suspected — skip final quote and push appointment booking.",
+    "cta_text": "Best next step is to book you in for a free in-shop teardown so we can give you an exact number.",
+    "booking_channels": ["phone_call", "sms", "online_booking_link"]
+  },
+  "supplement_workflow": {
+    "steps": [
+      "Tear down and inspect",
+      "Photo+video documentation of all additional damage",
+      "Write supplement lines (parts, labor, materials, calibrations)",
+      "Send customer updated estimate for approval",
+      "On insurance jobs, submit supplement to carrier/adjuster",
+      "Proceed only after approval"
+    ],
+    "approval_method": "sms_link_or_email",
+    "no_work_without_approval": true
+  },
+  "documentation": {
+    "require_photos": true,
+    "store_before_after": true,
+    "share_with_customer": true,
+    "share_with_adjuster_if_insurance": true
+  },
+  "uncertainty_rules": {
+    "sight_unseen_multiplier": {
+      "minor_hit": { "low_extra_percent": 10, "high_extra_percent": 20 },
+      "moderate_hit": { "low_extra_percent": 15, "high_extra_percent": 30 },
+      "severe_hit": { "low_extra_percent": 25, "high_extra_percent": 45 }
+    },
+    "apply_when": [
+      "Customer provides limited photos",
+      "Impact with potential internal damage",
+      "Fitment/alignment issues visible"
+    ],
+    "disclosure_text": "Range includes a contingency for possible hidden damage. We’ll confirm after teardown."
+  },
+  "communication_templates": {
+    "hidden_damage_intro": "Heads up — damage like this can hide cracked brackets, absorbers, or sensors behind the bumper. We’ll do a quick teardown, photo everything, and text you an updated, itemized estimate before we continue.",
+    "teardown_consent": "To get you an exact number, we’ll authorize up to {{hours_cap}} hours for teardown/inspection. If you approve repair, that time is part of the job; if you decline, it’s billed separately.",
+    "supplement_update": "We found additional damage behind the panel: {{list}}. Here’s the updated line-item estimate. Approve to proceed or reply with questions.",
+    "transparency_commitment": "Every change is documented with photos and line items so you know exactly what you’re paying for.",
+    "booking_push": "Best way forward is to get you booked in for teardown. That’s the only way to know the exact scope and parts list."
+  },
+  "guardrails": [
+    "Never promise final pricing before teardown when triggers present",
+    "If structural/SRS found, switch to inspection_required flow",
+    "If ADAS components moved/replaced, add calibration lines"
+  ]
+}
+
