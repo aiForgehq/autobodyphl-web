@@ -1,13 +1,25 @@
 {
   "meta": {
     "brand": "Collision Club",
+    "version": "2025-08-11-v1",
     "currency": "USD",
-    "version": "2025-08-11",
-    "notes": [
-      "Panel-first quoting. Never quote whole car unless user explicitly asks.",
-      "Always show low–high with add-ons called out as line items.",
-      "All warranties are prorated."
-    ]
+    "policy_notes": [
+      "Panel-first quoting. Never full car unless explicitly requested.",
+      "Itemize everything. Show low–high when ranges exist.",
+      "All warranties prorated."
+    ],
+    "contact": {
+      "phone": "267-212-1034",
+      "city": "Philadelphia, PA"
+    }
+  },
+
+  "rounding": { "nearest": 5, "mode": "nearest" },
+
+  "taxes_fees": {
+    "sales_tax_rate": 0.08,
+    "card_fee_rate": 0.035,
+    "apply_card_fee_only_if_payment_method_is_card": true
   },
 
   "rates": {
@@ -16,42 +28,34 @@
     "materials_body_per_hour": 14
   },
 
-  "packages_full_vehicle": {
-    "single_stage_enamel": {
-      "base_price": 599,
-      "warranty_years": "1-2",
-      "addons": {
-        "uv_enamel_upgrade": { "price": 100, "blurb": "UV protection enamel upgrade" }
-      }
-    },
-    "single_stage_urethane": {
-      "base_price": 799,
-      "warranty_years": "3-4",
-      "addons": {
-        "integrated_clear": { "price": 100, "blurb": "Integrated clear add-on" }
-      }
-    },
-    "basecoat_clear": {
-      "base_price": 1500,
-      "warranty_years": "5",
-      "addons": {
-        "performance_clear": { "price": 500, "blurb": "Performance clear upgrade" },
-        "matte_finish": { "price": 500, "blurb": "Matte finish add-on" }
-      }
-    },
-    "global_addons": {
-      "sand_vehicle": { "price": 299 },
-      "sealer_vehicle": { "price": 299, "range_max_if_bigger": 500 }
-    }
+  "panel_aliases": {
+    "front_bumper": "bumper_front",
+    "rear_bumper": "bumper_rear",
+    "left_fender": "fender_left",
+    "right_fender": "fender_right",
+    "left_front_door": "door_left_front",
+    "right_front_door": "door_right_front",
+    "left_rear_door": "door_left_rear",
+    "right_rear_door": "door_right_rear",
+    "left_quarter": "quarter_left",
+    "right_quarter": "quarter_right",
+    "liftgate": "tailgate_liftgate",
+    "tailgate": "tailgate_liftgate"
   },
 
   "panel_paint_base": {
-    "bumper": { "min": 400, "max": 600 },
-    "fender": { "min": 400, "max": 600 },
-    "door":   { "min": 400, "max": 700 },
-    "quarter":{ "min": 400, "max": 1000 },
-    "roof_damage": { "min": 400, "max": 700 },
+    "bumper_front": { "min": 400, "max": 600 },
+    "bumper_rear":  { "min": 400, "max": 600 },
+    "fender_left":  { "min": 400, "max": 600 },
+    "fender_right": { "min": 400, "max": 600 },
+    "door_left_front":  { "min": 400, "max": 700 },
+    "door_right_front": { "min": 400, "max": 700 },
+    "door_left_rear":   { "min": 400, "max": 700 },
+    "door_right_rear":  { "min": 400, "max": 700 },
+    "quarter_left":  { "min": 400, "max": 1000 },
+    "quarter_right": { "min": 400, "max": 1000 },
     "hood": { "min": 400, "max": 700 },
+    "roof_damage": { "min": 400, "max": 700 },
     "tailgate_liftgate": { "min": 400, "max": 800 }
   },
 
@@ -61,67 +65,311 @@
     "extra_prep": {
       "per_panel_hours_min": 1,
       "per_panel_hours_max": 3,
-      "explain": "Heavily faded/peeling/rough surfaces; charge labor+materials per hour"
+      "calc": "labor_per_hour * hours + materials_paint_per_hour * hours",
+      "notes": "Use when faded/peeling/heavy sanding needed."
     },
     "sealer_rule": {
-      "apply_to": "overall jobs always; panel jobs only when checkerboard/multiple substrates",
-      "vehicle_level_price": { "min": 299, "max": 500 }
+      "panel_jobs": { "apply": "conditional", "reason": "checkerboard/multiple substrates/color change", "vehicle_level_price_min": 299, "vehicle_level_price_max": 500 },
+      "overall_jobs": { "apply": "always", "price": 299, "range_max_if_bigger": 500 }
     },
-    "oversize_vehicle": { "flat_min": 300, "flat_max": 1000, "explain": "Size/height, paint volume, masking complexity" }
+    "oversize_vehicle": { "flat_min": 300, "flat_max": 1000, "triggers": ["height/roof access", "van/sprinter", "masking complexity", "paint volume"] }
   },
 
   "bodywork_menu": {
-    "small_dent":   { "min": 75,  "max": 150 },
-    "medium_dent":  { "min": 200, "max": 300 },
-    "large_dent":   { "min": 400, "max": 600 },
-    "rust_repair":  { "pricing": "case_by_case", "notes": "Grinding/fill vs cut/weld; can get expensive" }
+    "small_dent":  { "min": 75,  "max": 150 },
+    "medium_dent": { "min": 200, "max": 300 },
+    "large_dent":  { "min": 400, "max": 600 },
+    "rust_repair": { "pricing": "case_by_case", "notes": "Grinding/fill vs cut/weld — can be expensive." }
   },
 
-  "labor_calc": {
-    "materials_for_bodywork_hours_uses": "materials_body_per_hour",
-    "materials_for_paint_hours_uses": "materials_paint_per_hour",
-    "rules": [
-      "If extra_prep hours > 0, add labor_per_hour * hours plus materials_paint_per_hour * hours.",
-      "If bodywork chosen, add body labor time from estimator and materials_body_per_hour * hours."
-    ]
+  "full_vehicle_packages": {
+    "single_stage_enamel": {
+      "code": "ENAMEL",
+      "base_price": 599,
+      "warranty_years": "1-2",
+      "addons": {
+        "uv_enamel_upgrade": { "price": 100, "blurb": "UV protection enamel upgrade" }
+      },
+      "global_addons": { "sand_vehicle": 299, "sealer_vehicle": 299, "sealer_vehicle_max": 500 }
+    },
+    "single_stage_urethane": {
+      "code": "URETHANE",
+      "base_price": 799,
+      "warranty_years": "3-4",
+      "addons": {
+        "integrated_clear": { "price": 100, "blurb": "Integrated clear add-on" }
+      },
+      "global_addons": { "sand_vehicle": 299, "sealer_vehicle": 299, "sealer_vehicle_max": 500 }
+    },
+    "basecoat_clear": {
+      "code": "BCC",
+      "base_price": 1500,
+      "warranty_years": "5",
+      "addons": {
+        "performance_clear": { "price": 500, "blurb": "Performance clear upgrade" },
+        "matte_finish": { "price": 500, "blurb": "Matte finish add-on" }
+      },
+      "global_addons": { "sand_vehicle": 299, "sealer_vehicle": 299, "sealer_vehicle_max": 500 }
+    }
   },
 
-  "warranty": {
-    "panel_jobs": "follows paint system chosen for that panel; prorated",
-    "full_vehicle": "as listed in packages_full_vehicle; prorated"
+  "defaults": {
+    "panel_jobs_finish": "BCC",
+    "warranty_panel_jobs": "follows chosen system; prorated",
+    "rounding_apply": true,
+    "min_invoice_total": 150
   },
 
-  "matching_policy": {
-    "match_and_beat": true,
-    "beat_percent": 5,
-    "conditions": [
-      "Comparable scope and materials",
-      "Written estimate proof",
-      "Excludes non-like items (e.g., touch-up only vs refinish)"
-    ]
+  "rush": {
+    "surcharge_rate": 0.10,
+    "applies_to": "panel base + modifiers + labor/materials",
+    "note": "Only when customer requests expedited turnaround."
   },
+
+  "policies": {
+    "match_and_beat": { "enabled": true, "beat_percent": 5, "conditions": ["Comparable scope/materials", "Written estimate required", "Excludes touch-up only"] },
+    "fleet_policy": { "auto_discount": "none", "instruction": "Do not auto-quote discounts. Ask fleet to call for scope/volume/terms." },
+    "insurance_policy": {
+      "auto_quote": false,
+      "ask_fields": ["carrier","claim_number","adjuster_name","adjuster_phone","deductible_amount","is_drivable","photos_uploaded","police_report_if_applicable"],
+      "flows": {
+        "no_claim_open": {
+          "steps": [
+            "We inspect and write a CCC estimate.",
+            "You file the claim; we guide you.",
+            "We send estimate + photos to adjuster.",
+            "Once approved, schedule, order parts, repair.",
+            "Deductible at pickup; we bill carrier."
+          ]
+        },
+        "claim_open": {
+          "steps": [
+            "Provide carrier + claim # + adjuster contact.",
+            "We review adjuster estimate and write supplements.",
+            "Schedule drop-off and order approved parts.",
+            "Repairs, deductible at pickup, carrier billed."
+          ]
+        }
+      },
+      "guardrails": ["If insurance job, do NOT return dollar quote.", "Collect claim fields and move to the correct flow."]
+    }
+  },
+
+  "calc_rules": [
+    "For panel jobs: start with panel_paint_base per panel.",
+    "Add modifiers: pearl per panel; blend where requested; extra_prep hours -> labor + paint materials.",
+    "If sealer needed on panel jobs, add vehicle-level sealer per sealer_rule.",
+    "Oversize adds flat range if triggers present.",
+    "Rush adds 10% to subtotal (before tax/fees).",
+    "Sales tax on subtotal after rush.",
+    "Card fee only if payment method is card, applied on (subtotal + tax).",
+    "Round totals to nearest $5 if rounding_apply is true.",
+    "Apply min_invoice_total if calculated total is less than the minimum."
+  ],
 
   "sales_language": {
     "sanding": "We sand so the new paint sticks to the old. Better adhesion, smoother finish.",
     "sealer": "Sealer evens the surface so it doesn’t look like a checkerboard. Cleaner color, better coverage.",
     "upgrade_to_bcc": "Basecoat-clear gives deeper gloss and longer life. If you care about look and resale, this is it.",
     "warranty_pitch": "We stand behind the work. All warranties are prorated and documented — no games.",
-    "fleet_positioning": "We price fair and fast. Volume and repeat work get priority scheduling and consistent rates."
+    "fleet_positioning": "We price fair and fast. Volume gets priority scheduling and consistent rates."
   },
 
   "guardrails": [
-    "Never quote a full-vehicle repaint unless the customer explicitly requests 'full paint' or multiple panels exceed 70% of the car.",
-    "If user mentions single area (e.g., 'rear door'), scope only that panel + any required blends.",
-    "Always itemize: panel price, bodywork, extra prep hours, blends, pearls, sealer, oversize, tax (if applicable).",
-    "Always ask for 3–5 photos and VIN if unclear."
+    "Never quote full-vehicle unless user asks for full paint OR multiple panels exceed 70% of the car.",
+    "If user mentions a single area, quote only that panel plus required blends.",
+    "Always request 3–5 photos and VIN if unclear.",
+    "Do not stack matte with pearl unless user confirms (rare combo)."
   ],
 
   "intake_questions": [
     "Which panel(s) are damaged or getting painted?",
     "Any dents, rust, or peeling clear?",
     "Color code or VIN?",
-    "Is it a pearl/matte/special finish?",
+    "Is it pearl/matte/special finish?",
     "Timeline — standard or rush?",
-    "Is it retail or fleet/dealer?"
+    "Retail or fleet/dealer?",
+    "Insurance involved?"
+  ],
+
+  "examples": {
+    "panel_job_example": {
+      "panels": ["door_left_front"],
+      "options": { "pearl": true, "blends": ["fender_left"], "extraPrepHours": { "door_left_front": 2 }, "oversize": false, "rush": false, "paymentMethod": "cash" }
+    },
+    "insurance_example": {
+      "panels": ["rear_bumper"],
+      "options": { "insurance": { "isInsurance": true, "claimOpen": true } }
+    }
+  }
+}
+{
+  "meta": { "version": "2025-08-11-v1.1" },
+
+  "parts_policy": {
+    "use_oem_for_safety_components": true,
+    "allowed_non_oem_for_exterior": ["aftermarket", "LKQ/CAPA"],
+    "require_customer_approval_if_non_oem": true,
+    "document_brand_on_invoice": true,
+    "restocking_fee_percent": null, 
+    "notes": [
+      "Safety components (airbags, seatbelts, sensors, crash bars, steering, suspension) = OEM only.",
+      "Exterior bolt-on cosmetic parts can use aftermarket/LKQ with customer consent."
+    ]
+  },
+
+  "parts_pricing": {
+    "source": "cost_plus_markup",
+    "markup_percent": null,
+    "min_markup_dollars": 0,
+    "include_shipping_in_cost": true
+  },
+
+  "operations": {
+    "hours_strategy": {
+      "prefer_estimator_hours": true,
+      "fallback_table_enabled": true
+    },
+    "fallback_hours": {
+      "bumper_cover_replace": { "min": 1.5, "max": 3.0 },
+      "fender_replace":       { "min": 2.0, "max": 3.5 },
+      "door_shell_replace":   { "min": 3.5, "max": 5.0 },
+      "hood_replace":         { "min": 1.5, "max": 3.0 },
+      "radiator_support":     { "min": 4.0, "max": 7.0 },
+      "headlamp_replace":     { "min": 0.5, "max": 1.5 },
+      "taillamp_replace":     { "min": 0.5, "max": 1.0 },
+      "grille_replace":       { "min": 0.7, "max": 1.5 },
+      "mirror_replace":       { "min": 0.4, "max": 1.0 },
+      "glass_windshield":     { "min": 2.0, "max": 3.5 },
+      "glass_door":           { "min": 1.0, "max": 2.0 }
+    },
+    "rinr_definitions": {
+      "r_and_r": "Remove and Replace",
+      "r_and_i": "Remove and Install original part; no replacement"
+    },
+    "new_part_prep": {
+      "prime_bare_metal_or_plastic": true,
+      "per_panel_prep_fee_min": 50,
+      "per_panel_prep_fee_max": 150,
+      "notes": "Covers scuff, adhesion promoter, primer/surfacer on bare or raw parts"
+    }
+  },
+
+  "structural_frame": {
+    "use_frame_rate": false,
+    "frame_rate_per_hour": null,
+    "frame_rate_multiplier_over_labor": 1.0,
+    "measure_set_up_flat": null,
+    "ops": [
+      "Diagnosis & measurements",
+      "Pulls and anchoring",
+      "Sectioning (when applicable, per OEM procedures)"
+    ],
+    "guardrails": [
+      "If structural or rail damage suspected, quote requires in-shop inspection and measurements (no online price).",
+      "Follow OEM repair procedures; if sectioning not allowed, replace assembly."
+    ]
+  },
+
+  "glass_policy": {
+    "subcontract_allowed": true,
+    "internal_or_partner": "Precision ADAS / partner",
+    "pricing": "case_by_case",
+    "notes": [
+      "Windshield cracks in driver’s sweep => recommend replace.",
+      "Chip repair only if small and outside primary view.",
+      "Always assess rain sensor/HUD/ADAS camera mounts."
+    ]
+  },
+
+  "airbag_srs_policy": {
+    "no_repair_replace_only": true,
+    "oem_only": true,
+    "requires_scan_before_after": true,
+    "module_reset_or_replace": "per OEM",
+    "pretensioners_replace_if_deployed": true,
+    "online_quote": "inspection_required",
+    "notes": [
+      "Any airbag deployment requires SRS scan, module eval, pretensioner check.",
+      "Seat occupancy sensors and clockspring must be validated."
+    ]
+  },
+
+  "adas_calibration": {
+    "provider": "Precision ADAS Calibration (DriveCal.com)",
+    "trigger_events": [
+      "Windshield replacement",
+      "Front bumper/grille replacement or refinish with sensors",
+      "Side mirror with camera replacement",
+      "Rear bumper with radar",
+      "Roof/roof rail work affecting camera/radar mounts",
+      "Alignment or ride height changes"
+    ],
+    "fees": {
+      "static_calibration_min": 200,
+      "static_calibration_max": 400,
+      "dynamic_calibration_min": 150,
+      "dynamic_calibration_max": 300
+    },
+    "notes": [
+      "Some vehicles require both static and dynamic; some require targets and level floor.",
+      "If calibration required, do not release vehicle without pass result."
+    ]
+  },
+
+  "replace_vs_repair_logic": {
+    "decision_tree": [
+      "If part has cracks through mounting tabs or missing sections -> recommend REPLACE.",
+      "If metal has sharp creases across reinforcement or torn edges -> REPLACE.",
+      "If bumper energy absorber/crash bar deformed -> REPLACE absorber; inspect/replace bar per spec.",
+      "If paint delamination across majority of panel and substrate compromised -> REPAIR + extra prep or REPLACE if economics favor.",
+      "Glass cracked/chipped in driver's primary view or near edges -> REPLACE.",
+      "Airbag deployed or codes active -> SRS components REPLACE as per OEM, no cosmetic-only quote.",
+      "If REPLACE panel adjacent color match risk -> add 1–2 blends as required."
+    ],
+    "economics_rule": {
+      "repair_threshold_percent_of_new": 0.6,
+      "explain": "If repair labor + materials exceed 60% of new part price + paint, recommend replacement."
+    }
+  },
+
+  "vision_cues": {
+    "replace_signals": [
+      "Cracked bumper with missing tabs/sections",
+      "Torn/warped metal with stretch marks",
+      "Headlamp tabs broken or housing moisture present",
+      "Windshield crack spanning > 6 inches or into driver sweep",
+      "Airbag deployed, seatbelt locked",
+      "Radar/camera bracket broken"
+    ],
+    "repair_signals": [
+      "Scuffs, scratches, minor gouges under 2mm deep",
+      "Shallow dents without sharp crease",
+      "Localized clear coat peel without substrate failure"
+    ]
+  },
+
+  "calc_extensions": {
+    "part_replacement_line": {
+      "fields": ["part_name", "oem_or_non_oem", "part_cost", "markup_dollars", "labor_hours", "materials_hours"],
+      "compute": [
+        "part_sell = part_cost + max(markup_dollars, part_cost * (parts_pricing.markup_percent || 0)/100)",
+        "labor_total = labor_hours * rates.labor_per_hour",
+        "materials_total = materials_hours * rates.materials_body_per_hour",
+        "if new_part_prep applies: add per_panel_prep_fee"
+      ]
+    },
+    "auto_blend_rule_on_new_parts": {
+      "apply": true,
+      "panels_to_consider": ["adjacent_panel_1", "adjacent_panel_2"],
+      "blend_fee_per_panel_min": 100,
+      "blend_fee_per_panel_max": 125
+    }
+  },
+
+  "guardrails_replace": [
+    "Never quote SRS or structural work online as a hard dollar; return 'inspection_required'.",
+    "If ADAS triggers present, add calibration line item with range and flag as required.",
+    "If using non-OEM exterior parts, disclose brand, fitment risk, and finish differences."
   ]
 }
